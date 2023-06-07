@@ -14,6 +14,7 @@ router.post('/createUser', [
     body('password', "Password length should be >=5").isLength({ min: 6 }),
     body('email', "Please enter valid email").isEmail()
 ], async (req, res) => {
+    let success = false;
     const errors = validationResult(req);
     //validator for chekking information
     if (!errors.isEmpty()) {
@@ -35,18 +36,18 @@ router.post('/createUser', [
             email: req.body.email,
             password: passHash
         })
-
+        user = await users.findOne({ email: req.body.email });
         //create private token for authentication...hereb 'notebook is secrete sign
         const data = {
             user: {
-                id: users.id
+                id: user.id
             }
         }
         var authToken = jwt.sign(data, 'notebook');
-        res.send({ authToken })
+        res.send({ success: true, authToken })
     }
 
-    catch {
+    catch (err) {
         console.log("Some error occures")
         return res.status(500).send("somthing happend")
     }
@@ -58,6 +59,7 @@ router.post("/loginUser", [
     body('password', "Password length should be >=5").isLength({ min: 6 }),
     body('email', "Please enter valid email").isEmail()
 ], async (req, res) => {
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -78,7 +80,7 @@ router.post("/loginUser", [
             }
         }
         var authToken = jwt.sign(data, 'notebook');
-        res.send({ authToken })
+        res.send({ success: true, authToken })
     }
     catch (err) {
         console.log("Some error occures")

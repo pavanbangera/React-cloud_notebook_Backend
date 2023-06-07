@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-
+require('dotenv').config();
+const DB_API = process.env.DB_API;
 const mongooseConnect = () => {
-    mongoose.connect('mongodb://127.0.0.1:27017/notebook').then(() => {
+    mongoose.connect(`${DB_API}`).then(() => {
         console.log("connected")
     }).
         catch(error => handleError(error));

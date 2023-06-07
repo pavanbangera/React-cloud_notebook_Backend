@@ -11,26 +11,27 @@ router.post('/addnote', fetchUserData, [
     async (req, res) => {
         try {
             const { title, description, tag } = req.body
-            console.log(title)
+
             const errors = validationResult(req);
             //validator for chekking information
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
 
-            await note.create({
+            const Note = await note({
                 title: title,
                 description: description,
                 tag: tag,
                 user: req.user.id
             })
+            const saveNote = await Note.save()
 
-            res.json({ note })
+            res.json(saveNote)
         } catch (error) {
-            res.json("Internal server error")
+            console.log("Internal server error:", error);
+            res.status(500).json("Internal server error");
         }
-
-    })
+    });
 
 router.get('/fetchnotes', fetchUserData, async (req, res) => {
     const id = req.user.id;
