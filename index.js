@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 var cors = require('cors')
 require('dotenv').config();
-const port = process.env.APP_PORT
+const port = process.env.APP_PORT || 5000
 mongooseConnect();
 
 
